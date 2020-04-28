@@ -1,0 +1,271 @@
+#Options
+GenerateScanner = true
+GenerateParser = true
+Language = Java
+ScannerName = Lexico
+ParserName = Sintatico
+SemanticName = Semantico
+Package = compiler
+ScannerCaseSensitive = true
+ScannerTable = Hardcode
+Input = Stream
+Parser = SLR
+#RegularDefinitions
+L		: [A-Za-z]
+LM		: [a-z]
+LC		: [A-Z]
+C1		: [^\"]
+C2		: [^']
+D		: [0-9]
+WS		: [\ \t\n\r]
+COMMENTLINE1	: [/]+[/].*
+COMMENTLINE2	: [#].*
+COMMENTALL	: "/*" [^ "*"]* "*/"
+#Tokens
+"+"
+"-"
+"*"
+"**"
+"/"
+"^"
+"("
+")"
+"["
+"]"
+"{"
+"}"
+":"
+";"
+"="
+"<>"
+"=="
+"==="
+"!="
+">"
+"<"
+">="
+"<="
+"&&"
+"&"
+"||"
+"|"
+"!"
+"~"
+"not"
+"nao"
+"and"
+"e"
+"or"
+"ou"
+"xor"
+","
+"."
+"@vers:"
+
+id	: ( {LM} | _ ) ( {L} | {D} | _ )*
+const	: {LC}+
+int	: {D}+
+float	: {D}+ "." {D}+
+text	: \" {C1}* \" | "'" {C2}* "'"
+
+import		= id : "import"
+importe		= id : "importe"
+include		= id : "include"
+incluir		= id : "incluir"
+function		= id : "function"
+funcao		= id : "funcao"
+func		= id : "func"
+input		= id : "input"
+entrada		= id : "entrada"
+print		= id : "print"
+imprima		= id : "imprima"
+println		= id : "println"
+imprimaln	= id : "imprimaln"
+if		= id : "if"
+se		= id : "se"
+elif		= id : "elif"
+else		= id : "else"
+senao		= id : "senao"
+while		= id : "while"
+enquanto		= id : "enquanto"
+for		= id : "for"
+para		= id : "para"
+in		= id : "in"
+no		= id : "no"
+range		= id : "range"
+intervalo	= id : "intervalo"
+return		= id : "return"
+retorne		= id : "retorne"
+true		= id : "true"
+verdadeiro	= id : "verdadeiro"
+false		= id : "false"
+falso		= id : "falso"
+funcinternal	= id : "funcinternal"
+null		= id : "null"
+nulo		= id : "nulo"
+private		= id : "private"
+privado		= id : "privado"
+
+ : {WS}*
+ :! {COMMENTLINE1}
+ :! {COMMENTLINE2}
+ :! {COMMENTALL}
+#NonTerminals
+<ST>
+<START>
+<STAGE>
+<IMPORT>
+<INCLUDE>
+<ID>
+<IDV>
+<E>
+<T>
+<P>
+<R>
+<PRINT>
+<INPUT>
+<IF>
+<ELIF>
+<ELSE>
+<ELSEE>
+<IFELSE>
+<WHILE>
+<FOR>
+<IN>
+<RANGE>
+<CONFER>
+<CONFER2>
+<CONFER3>
+<CONFER4>
+<INPUTGET>
+<VECTORGET>
+<VECTORGETDATA>
+<MATRIXGET>
+<FUNCTION>
+<INTERLFUNC>
+<CONCTEXT>
+<PARAMETER>
+<PARAMETER2>
+<PARAMETERVAL>
+<PARAMETERVAL2>
+<PARAMETERSIMPLE>
+<PARAMETERSIMPLE2>
+<INCREMENT>
+<COMP>
+<LOGIC>
+<BOOL>
+<RETURN>
+<PONTV>
+<TORETURN>
+<TYPES>
+<TYPESIMPLE>
+<NOT>
+<VALUEINT>
+<TEXT>
+<NULL>
+<PRIVATE>
+#Grammar
+<ST> ::= <IMPORT> "(" <TEXT> ")" <PONTV> #20 <ST> | <IMPORT> <TEXT> <PONTV> #20 <ST> | "@vers:" float #25 <ST> | <INTERLFUNC>;
+
+<INTERLFUNC> ::= <START> <PRIVATE> <FUNCTION> id #37 "(" <PARAMETERVAL> ")" "{" #61 <START> <TORETURN> #63 "}" <INTERLFUNC> 
+		| <START>;
+
+<START> ::= <STAGE> <START>;
+<START> ::= î;
+
+<STAGE> ::= <INCLUDE> "(" <TEXT> ")" <PONTV> #21| <INCLUDE> <TEXT> <PONTV> #21;
+<STAGE> ::= <PRINT> "(" <CONCTEXT> ")" <PONTV> #44| <PRINT> <TEXT> <PONTV> #45;
+<STAGE> ::= <INPUTGET> <PONTV>;
+<STAGE> ::= <IF> <CONFER> #64 "{" <START> "}" #65 <IFELSE> | <IF> <CONFER> #64 ":" <STAGE> #69| <IF> <CONFER> #64 <STAGE> #69;
+
+<IFELSE> ::= <ELIF> <CONFER> #66 "{" <START> "}" #67 <IFELSE>| <ELSEE>;
+<ELSEE> ::= <ELSE> #68 "{" <START> "}" #69| î #79;
+
+<STAGE> ::= <WHILE> #70 <CONFER> "{" #71 <START> #72 "}"
+		;//| <WHILE> #70 <CONFER> "," <INCREMENT> "{" #71 <START> #72 "}"
+		//| <WHILE> #70 "(" <CONFER> "," <INCREMENT> ")" "{" #71 <START> #72 "}";
+<STAGE> ::= <FOR> id #17 <IN> <RANGE> "(" <E> "," <E> ")" "{" #18 <START> #19 "}" 
+		| <FOR> id #17 <IN> <RANGE> <E> "," <E> "{" #18 <START> #19 "}"
+		;//| <FOR> <ID> <E> "," <E> "{" <START> "}";
+<STAGE> ::= id #53 "=" <TYPESIMPLE> <PONTV> #22;
+<STAGE> ::= <VECTORGET> "=" <PRIVATE> funcinternal "(" <VALUEINT> "," <TYPES> ")" <PONTV> #24;
+<STAGE> ::= const #7 "=" float #81 <PONTV>| const #7 "=" int #81 <PONTV>| const #7 "=" text #81 <PONTV>;
+<STAGE> ::= <TYPES> <PONTV>;
+<STAGE> ::= <INCREMENT> <PONTV>;
+<STAGE> ::= <VECTORGET> "=" <TYPESIMPLE> <PONTV> #73
+		| <VECTORGET> "=" "[" <PARAMETERSIMPLE> "]" <PONTV> #78
+		| <VECTORGET> "=" <VECTORGET> <PONTV> #74
+		| <VECTORGETDATA> "=" <TYPESIMPLE> <PONTV> #75
+		| <VECTORGETDATA> "=" <NULL> <PONTV> #76
+		| <MATRIXGET> "=" <TYPES> <PONTV> #77;
+
+<VECTORGETDATA> ::= <IDV> "[" <VALUEINT> "]" #30 
+		| <IDV> "[" <VALUEINT> "]" "[" <VALUEINT> "]" #32;
+<MATRIXGET> 	::= <IDV> "[" "]" "[" "]" #31;
+<VECTORGET>	::= <IDV> "[" "]" #29
+		//| <IDV> "[" <PARAMETER> "]"
+		| <IDV> "[" <VALUEINT> "]" "[" "]" #33
+		| <IDV> "[" "]" "[" <VALUEINT> "]" #34;
+
+//<FUNCTIONGET>	::= ;
+
+<IMPORT>	::= import | importe;
+<INCLUDE>	::= include | incluir;
+<FUNCTION>	::= function | funcao | func;
+<PRINT>		::= print #1| imprima #1| println #2| imprimaln #2;
+<INPUT>		::= input| entrada;
+<IF>		::= if | se;
+<ELIF>		::= else if | senao se| elif;
+<ELSE>		::= else | senao ;
+<WHILE>		::= while | enquanto;
+<FOR>		::= for | para;
+<IN>		::= in | no;
+<RANGE>		::= range | intervalo;
+<RETURN>	::= return | retorne;
+<BOOL>		::= true #3| verdadeiro #3| false #4| falso #4;
+<NULL>		::= null | nulo;
+<PRIVATE>	::= private | privado | î;
+<PONTV>		::= ";" | î;
+
+<E>	::= <E> "+" <T> #38| <E> "-" <T> #39| <T>;
+<T>	::= <T> "*" <P> #40| <T> "/" <P> #41| <P>;
+<P>	::= <P> "^" <R> #42| <P> "**" <R> #42| <R>;
+<R>	::= "(" <E> ")" | "-" <R> #80| "+" <R> | <ID> "(" #35 <PARAMETER> ")" #36 | <VECTORGETDATA>
+	| <ID> #43| int #5| float #6| const #8;
+
+
+<ID> 		::= id #0;
+<IDV>		::= id #52;
+<TEXT> 		::= text #9;
+<VALUEINT> 	::= int #5| <ID> #51;
+<TYPES> 		::= <TEXT> #46| <BOOL> #47| <E> #48| <VECTORGET> #49 | <MATRIXGET> #50| "(" <TYPES> ")";
+<TYPESIMPLE> 	::= <TEXT> #46| <BOOL> #47| <E> #48| <INPUTGET> #23| "(" <TYPESIMPLE> ")";
+
+
+<INCREMENT> ::= <ID> "+" "+" #26| <ID> "-" "-" #27;
+
+
+<CONFER> ::= <NOT> <CONFER2> #54| <CONFER2>;
+<CONFER2> ::= <CONFER2> <LOGIC> <CONFER3> #55| <CONFER3>;
+<CONFER3> ::= <CONFER3> <COMP> <CONFER4> #56| <CONFER4>;
+<CONFER4> ::= <TYPESIMPLE> | "(" <CONFER> ")";
+
+<INPUTGET> ::= <INPUT> "(" <CONCTEXT> ")" #57| <INPUT> <TEXT> #58;
+
+<CONCTEXT> ::= <CONCTEXT> "." <TYPESIMPLE> #59| <CONCTEXT> "." <VECTORGET> #12| <TYPESIMPLE> #59| <VECTORGET> #12| î;
+
+<PARAMETER> ::= <PARAMETER2> | î;
+<PARAMETER2> ::=  <PARAMETER> "," <TYPES> #60| <TYPES> #60;
+
+<PARAMETERSIMPLE> ::= <PARAMETERSIMPLE2> | î;
+<PARAMETERSIMPLE2> ::= <PARAMETERSIMPLE2> "," <TYPESIMPLE> #11| <TYPESIMPLE> #11;
+
+<PARAMETERVAL> ::= <PARAMETERVAL2> | î;
+<PARAMETERVAL2> ::= <PARAMETERVAL2> "," <ID> #13| <PARAMETERVAL2> "," <MATRIXGET> #15
+			| <PARAMETERVAL2> "," <VECTORGET> #14| <ID> #13| <MATRIXGET> #15| <VECTORGET> #14;
+
+<TORETURN> ::= <RETURN> <TYPES> #62 <PONTV> | î;
+
+<COMP> ::= ">" #10| "<" #10| ">=" #10| "<=" #10| "!=" #10| "<>" #10| "==" #10| "===" #10;
+<NOT> ::= "!" #10| "~" #10| "not" #10| "nao" #10;
+<LOGIC> ::= "&&" #10| "&" #10| "and" #10| "e" #10| "||" #10| "|" #10| "or" #10| "ou" #10| "xor" #10;

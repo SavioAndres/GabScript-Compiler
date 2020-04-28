@@ -1,0 +1,15 @@
+@vers: 0.01
+
+PI = 3.1416
+E = 2.7182
+
+func factorial(value) {
+	math[] = funcinternal (0, value)
+	return math[0]
+}
+
+func random(min, max) {
+	hh[] = [min, max]
+	ram[] = funcinternal (1, min)
+	return ram[0]
+}
