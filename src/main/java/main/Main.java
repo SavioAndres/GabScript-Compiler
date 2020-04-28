@@ -34,7 +34,7 @@ public class Main {
         version = 0.01;
         Scanner sc = new Scanner(System.in, "latin1");
         //String cmd = sc.nextLine();
-        String cmd = "C:\\Users\\savio\\Documents\\Projects\\Java\\MCompiler_v0.01\\files\\teste.txt";
+        String cmd = "C:\\Users\\savio\\Documents\\Projects\\Java\\GabScript\\files\\teste.txt";
         pathMain = cmd;
         String cmd2 = "", cmd3 = "";
         switch (cmd) {

@@ -1,0 +1,24 @@
+import 'math'
+import 'testelib'
+import 'testel'
+
+
+x[] = [2,5,3,6]
+g[][] = 9
+x[1] = null
+
+
+
+function flz(u){
+	return u * 2
+}
+
+println('ytf tditdt ditdi di '.
+	'kjjhf jghg')
+println(flz(4))
+println(flz(74)-flz(9))
+println (x[] . ' ---- ')
+println ('Esse é o valor de PI: ' . PI * E)
+println(factorial(13))
+println(mult(9,2))
+println(soma(7,6))

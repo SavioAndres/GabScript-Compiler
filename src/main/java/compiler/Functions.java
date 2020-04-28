@@ -19,8 +19,6 @@ public class Functions {
     public Functions(ArrayList<ExecuteAction> listActions) {
         this.listActions = listActions;
     }
-
-    
     
     public Stack<Elements> getParameter() {
         return parameter;
