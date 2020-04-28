@@ -5,6 +5,10 @@ import static structures.ReadFile.readError;
 
 public class AnalysisError extends Exception
 {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -6385633929675477415L;
     private int position;
 
     public AnalysisError(String msg, int position)
